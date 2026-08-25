@@ -11,11 +11,13 @@ The Cátedra Góngora describes the poetry XML as a revised digital form of the 
 - https://www.uco.es/catedragongora/?page_id=3483
 - https://github.com/gongoradigital/gongoraobra
 
-For Paper 1, a year extracted from this XML is recorded as `scholarly_chronology_year` with confidence B. It is not automatically called an exact documentary composition date. Textual matching to the Navarro corpus must be verified poem by poem, with collisions and low-similarity links excluded.
+For Paper 1, a year extracted from this XML is recorded as `scholarly_chronology_year`. Confidence depends on linkage quality: an exact normalized full-text identity receives confidence A, whereas fuzzy or variant-based linkage receives confidence B. The scholarly chronology year is still not described as an exact documentary composition date unless independent evidence warrants that stronger claim. Collisions and low-similarity links remain excluded.
 
 ### Phase 5 linkage rule
 
 Phase 4 accepts exact full-text matches or full-text similarity >= 0.98 when the scholarly target is one-to-one. Phase 5 may recover additional textual variants only when the normalized first two verse lines identify a unique 14-line scholarly poem, full-text similarity is >= 0.95, the target has a unique scholarly year, the target is unused by Phase 4, and no two Navarro poems compete for it. This is intended as an orthogonal identity check rather than a mechanical lowering of the Phase-4 threshold.
+
+The corrected Phase-5 implementation is idempotent for repeated identical temporal assignments and raises an error only when a genuinely contradictory assignment is attempted. Under the pinned sources, the expected validated chronology totals are 58 primary-dated Góngora sonnets: 12 exact links (confidence A), 41 Phase-4 fuzzy links (confidence B), and 5 additional Phase-5 variant links (confidence B).
 
 ## Garcilaso de la Vega
 
@@ -111,3 +113,16 @@ A poem can enter the primary temporal analysis only through one of the following
 The following are never silently promoted to composition time: author birth/death years, author-lifespan midpoints, witness dates, modern edition dates, first-publication dates or posthumous collection dates.
 
 Phase 5 operationalizes this by keeping three separate clocks in the notebook: `composition_min/max`, `circulation_year`, and `sensitivity_min/max`.
+
+## Phase 5 corrected validation target
+
+With the currently pinned sources, the corrected notebook should terminate with the following invariant checks:
+
+- 76 primary-dated poems in total;
+- confidence A = 14;
+- confidence B = 62;
+- 100 Boscán poems in the sensitivity-only layer;
+- 89 Herrera circulation/attestation records;
+- zero H/P2 dates promoted to Herrera composition time.
+
+Any future change to these totals must be explained by a documented source update or explicit methodological revision rather than by a silent code change.
