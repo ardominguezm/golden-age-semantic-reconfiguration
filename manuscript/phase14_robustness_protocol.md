@@ -18,7 +18,7 @@ The benchmark remains:
 - spaCy 3.8.7 + `es_core_news_sm` 3.8.0;
 - concept identity `lemma::coarse_POS`, POS in NOUN/VERB/ADJ/ADV;
 - global vocabulary poem-DF >=2 (668 concepts);
-- 20-year rolling windows, 5-year step;
+- 20-year rolling windows, 5-year step, 1565–1584 through 1605–1624;
 - `B_line_support1`: within-line co-occurrence, minimum raw pair support 1, PPMI;
 - rewiring measured as cosine distance on persistent-concept edge vectors;
 - both raw and author-balanced modes;
@@ -47,20 +47,30 @@ Keep the main `B_line_support1` representation but require poem document frequen
 
 ### R3 — Temporal-window width
 
-Keep the main semantic representation and evaluate the two previously frozen calendar sensitivities:
+Keep the main semantic representation and use the exact stable calendar windows identified pre-semantically in Phase 9. This clarification is made before Phase-14 semantic robustness is executed and uses only Phase-9 support outputs.
 
-- 15-year rolling windows, step 5;
-- 25-year rolling windows, step 5.
+For the 15-year design, stable windows are:
 
-Window edges are generated mechanically from the same chronology support. Neither 1580 nor 1605 defines a window boundary.
+- 1570–1584 and 1575–1589 (an early two-window run);
+- 1585–1599, 1590–1604, 1595–1609, 1600–1614, 1605–1619, and 1610–1624 (the longest six-window run).
+
+The unstable 1580–1594 window is not inserted to bridge the two runs; transitions are computed only between consecutive stable windows separated by the frozen 5-year step.
+
+For the 25-year design, the complete stable run is:
+
+- 1560–1584, 1565–1589, 1570–1594, 1575–1599, 1580–1604, 1585–1609, 1590–1614, 1595–1619, and 1600–1624.
+
+Neither 1580 nor 1605 defines these windows. Their locations are inherited from the Phase-9 calendar grid and support audit.
+
+Because odd-width designs place adjacent-transition centers at half-integer years, exact-center Spearman concordance with the 20-year benchmark is undefined. For R3 the notebook therefore reports the complete sensitivity trajectory, its maximum, and the two sensitivity transition centers bracketing the benchmark 1592 episode where available. It does not interpolate or shift a sensitivity trajectory to manufacture common centers.
 
 ### R4 — Paired standardized-text sensitivity
 
 The Hernández-Lorenzo standardized network corpus is used only for poem identities that were already reconciled to Navarro with the Phase-10 crosswalk rules. Because the standardized layer does not cover all 97 primary poems and Pedro Espinosa has no corresponding author file, this analysis is explicitly **paired and restricted**, not a replacement longitudinal corpus.
 
-For every eligible poem, compare semantic quantities using Navarro TEI versus its matched standardized text under the same NLP, vocabulary-construction rule and network specification. Coverage by author/window must be reported before any semantic comparison. No unmatched standardized poem is substituted for a canonical poem.
+For every eligible poem, compare Navarro TEI with its matched standardized text under the same NLP and network specification. To avoid letting one text layer determine the other's vocabulary, each paired layer independently applies the already-frozen global poem-DF >=2 vocabulary-construction rule to the **same matched poem identities**. The resulting trajectory statistics, coverage, and vocabulary sizes are compared; no vocabulary is chosen from the outcome. This layer-specific application of the same frozen rule is specified before Phase-14 results.
 
-This sensitivity is descriptive unless temporal support satisfies the same engineering support requirements as the benchmark after restricting to paired poems.
+Coverage by author/window is reported before semantic comparison. No unmatched standardized poem is substituted for a canonical poem. This sensitivity is descriptive unless temporal support satisfies the same engineering support requirements as the benchmark after restricting to paired poems.
 
 ### R5 — Feasible leave-one-author-out analyses
 
@@ -76,7 +86,7 @@ An author is tested only for transitions whose two adjacent windows satisfy thes
 
 ## Observed robustness trajectories
 
-For R1–R3 and any R4/R5 design that passes its support gate, rebuild the full trajectory over 1,000 chronology realizations and report for every transition and mode:
+For R1–R3 and any R4/R5 design that passes its support gate, rebuild the trajectory over 1,000 chronology realizations and report for every eligible transition and mode:
 
 - median, q10 and q90 lexical turnover;
 - median, q10 and q90 persistent-concept cosine rewiring;
@@ -95,7 +105,7 @@ For each admissible robustness design, apply the same local author-overlap-prese
 - `ROBUST_NULL_SEED = 20260827`;
 - 50 chronology realizations selected evenly from the 1,000 benchmark chronology draws;
 - 20 counterfactual replicates per selected realization;
-- 1,000 N1 counterfactual realizations per transition and mode.
+- 1,000 N1 counterfactual realizations per eligible transition and mode.
 
 Report null median, q90, q95, observed-minus-null excess, observed percentile and one-sided empirical tail probability. These robustness tail probabilities are descriptive stability diagnostics and do not supersede the 2,000-draw Phase-13 N1 result.
 
@@ -105,16 +115,16 @@ For R1–R3, generate 1,000 coherent within-author chronology-permutation trajec
 
 ## Concordance summaries
 
-For each robustness design, report the following without defining a post-hoc binary success threshold:
+For each robustness design, report without defining a post-hoc binary success threshold:
 
-1. whether the benchmark episode remains among the largest rewiring movements;
+1. whether the benchmark episode remains among the largest rewiring movements, or for R3 the behavior of the pre-specified neighborhood bracketing 1592;
 2. sign and magnitude of observed-minus-N1-median excess;
 3. N1 percentile and empirical tail probability in raw and author-balanced modes;
 4. N2 percentile and max-statistic tail probability when applicable;
-5. Spearman rank correlation between the benchmark eight-transition trajectory and the sensitivity trajectory over their common transition centers;
+5. Spearman rank correlation between benchmark and sensitivity trajectories only when exact transition centers are shared; otherwise `NA` with the reason recorded;
 6. the absolute raw-versus-author-balanced difference.
 
-The analysis will emphasize the *pattern across sensitivity designs*, not a count of p-values below an arbitrary cutoff.
+The analysis emphasizes the pattern across sensitivity designs, not a count of p-values below an arbitrary cutoff.
 
 ## Interpretation rules
 
