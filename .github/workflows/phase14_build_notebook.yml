@@ -17,65 +17,65 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build self-contained notebook
+      - name: Build self-contained Colab notebook
         shell: bash
         run: |
           python - <<'PY'
-          import json
-          from pathlib import Path
+          import base64, hashlib, json, pathlib, zlib
 
-          src_path = Path('src/phase14_robustness.py')
-          src = src_path.read_text(encoding='utf-8')
+          p = pathlib.Path('src/phase14_robustness.py')
+          script = p.read_bytes()
+          gitsha = hashlib.sha1(b'blob ' + str(len(script)).encode() + b'\0' + script).hexdigest()
+          packed = base64.b64encode(zlib.compress(script, 9)).decode('ascii')
 
-          old = "abs(hash(design))%(2**31-1)"
-          new = "int(hashlib.sha256(design.encode('utf-8')).hexdigest()[:8],16)"
-          assert src.count(old) == 2, src.count(old)
-          src = src.replace(old, new)
-
-          badge = '<a href="https://colab.research.google.com/github/ardominguezm/golden-age-semantic-reconfiguration/blob/main/notebooks/paper1_analysis.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>'
-          md = f'''{badge}
+          md = '''<a href="https://colab.research.google.com/github/ardominguezm/golden-age-semantic-reconfiguration/blob/main/notebooks/paper1_analysis.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 # Paper 1 — Golden Age Semantic Reconfiguration
 
-**Current stage: Phase 14 — Robustness of semantic reconfiguration and null contrast**
+**Current stage: Phase 14 — Robustness of Semantic Reconfiguration and Null Contrast**
 
-Phase 13 found a mixed but informative result: the episode centered at 1592 was unusual under the global within-author chronology null, but not under the preregistered local author-overlap-preserving null. Phase 14 tests whether that decomposition is stable to previously frozen choices of semantic context, vocabulary threshold, temporal width, text layer, and author composition.
+Phase 13 produced mixed but informative evidence: the globally permuted chronology showed a localized temporal-ordering signal, while the stricter local author-overlap-preserving null did not support a primary excess-rewiring claim. Phase 14 tests whether that decomposition is stable under robustness axes frozen before historical validation: token-5 context, DF>=3 vocabulary, Phase-9 15/25-year windows, paired Navarro/Hernández text, and pre-semantically feasible author ablations.
 
-The benchmark inference from Phase 13 is not redefined here. Historiographic markers (1580/1605), Renaissance/Baroque labels, and historical change-point tuning remain excluded until robustness is complete.
+**Safeguard:** Phase 14 cannot redefine the governing Phase-13 N1 result. Historiographic dates (1580/1605), Renaissance/Baroque labels, and change-point models remain excluded from robustness construction and tuning.
 
-This notebook is self-contained. It reproduces the frozen 97-poem chronology and Phase-13 benchmark, then runs R1–R5 and the preregistered robustness nulls. Random design seeds are derived from SHA-256 rather than Python's process-randomized `hash()`.
+The analysis script is embedded in this notebook and verified against its Git blob SHA. It is executed in a fresh Python subprocess with `PYTHONHASHSEED=0`, making the design-specific null seeds reproducible despite the archived script's use of Python `hash()`.
 '''
 
-          notebook = {
-              'cells': [
-                  {
-                      'cell_type': 'markdown',
-                      'metadata': {'id': 'title'},
-                      'source': md.splitlines(keepends=True),
-                  },
-                  {
-                      'cell_type': 'code',
-                      'execution_count': None,
-                      'metadata': {'id': 'phase14_full_analysis'},
-                      'outputs': [],
-                      'source': src.splitlines(keepends=True),
-                  },
-              ],
-              'metadata': {
-                  'colab': {'name': 'paper1_analysis.ipynb', 'provenance': []},
-                  'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'},
-                  'language_info': {'name': 'python'},
-              },
-              'nbformat': 4,
-              'nbformat_minor': 5,
+          code = f'''import base64, zlib, hashlib, os, subprocess, sys
+from pathlib import Path
+
+PACKED = {packed!r}
+EXPECTED_GIT_BLOB_SHA = {gitsha!r}
+script_bytes = zlib.decompress(base64.b64decode(PACKED))
+got = hashlib.sha1(b"blob " + str(len(script_bytes)).encode() + b"\\0" + script_bytes).hexdigest()
+assert got == EXPECTED_GIT_BLOB_SHA, (got, EXPECTED_GIT_BLOB_SHA)
+script_path = Path('/content/phase14_robustness.py')
+script_path.write_bytes(script_bytes)
+print('Embedded Phase-14 script verified:', got, '| bytes:', len(script_bytes))
+print('Deterministic subprocess hash seed: PYTHONHASHSEED=0')
+env = os.environ.copy()
+env['PYTHONHASHSEED'] = '0'
+subprocess.run([sys.executable, str(script_path)], env=env, check=True)
+'''
+
+          nb = {
+            'cells': [
+              {'cell_type':'markdown','metadata':{'id':'title'},'source':md},
+              {'cell_type':'code','execution_count':None,'metadata':{'id':'phase14_runner'},'outputs':[],'source':code},
+            ],
+            'metadata': {
+              'kernelspec': {'display_name':'Python 3','language':'python','name':'python3'},
+              'language_info': {'name':'python'},
+              'colab': {'name':'paper1_analysis.ipynb','provenance':[]},
+            },
+            'nbformat':4,
+            'nbformat_minor':5,
           }
-          out = Path('notebooks/paper1_analysis.ipynb')
-          out.parent.mkdir(parents=True, exist_ok=True)
-          out.write_text(json.dumps(notebook, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          print('Built', out, 'from', src_path)
+          pathlib.Path('notebooks/paper1_analysis.ipynb').write_text(json.dumps(nb, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+          print('Notebook generated; script blob:', gitsha, '| compressed chars:', len(packed))
           PY
 
-      - name: Commit notebook
+      - name: Commit notebook safely
         shell: bash
         run: |
           if git diff --quiet -- notebooks/paper1_analysis.ipynb; then
@@ -86,4 +86,6 @@ This notebook is self-contained. It reproduces the frozen 97-poem chronology and
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add notebooks/paper1_analysis.ipynb
           git commit -m 'Prepare Phase 14 self-contained Colab notebook'
-          git push
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
