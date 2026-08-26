@@ -1,3 +1,4 @@
+# trigger: phase14 self-contained notebook build
 name: Build Phase 14 notebook
 
 on:
