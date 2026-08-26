@@ -1,0 +1,89 @@
+name: Build Phase 14 notebook
+
+on:
+  push:
+    paths:
+      - 'src/phase14_robustness.py'
+      - '.github/workflows/phase14_build_notebook.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build self-contained notebook
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          src_path = Path('src/phase14_robustness.py')
+          src = src_path.read_text(encoding='utf-8')
+
+          old = "abs(hash(design))%(2**31-1)"
+          new = "int(hashlib.sha256(design.encode('utf-8')).hexdigest()[:8],16)"
+          assert src.count(old) == 2, src.count(old)
+          src = src.replace(old, new)
+
+          badge = '<a href="https://colab.research.google.com/github/ardominguezm/golden-age-semantic-reconfiguration/blob/main/notebooks/paper1_analysis.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>'
+          md = f'''{badge}
+
+# Paper 1 — Golden Age Semantic Reconfiguration
+
+**Current stage: Phase 14 — Robustness of semantic reconfiguration and null contrast**
+
+Phase 13 found a mixed but informative result: the episode centered at 1592 was unusual under the global within-author chronology null, but not under the preregistered local author-overlap-preserving null. Phase 14 tests whether that decomposition is stable to previously frozen choices of semantic context, vocabulary threshold, temporal width, text layer, and author composition.
+
+The benchmark inference from Phase 13 is not redefined here. Historiographic markers (1580/1605), Renaissance/Baroque labels, and historical change-point tuning remain excluded until robustness is complete.
+
+This notebook is self-contained. It reproduces the frozen 97-poem chronology and Phase-13 benchmark, then runs R1–R5 and the preregistered robustness nulls. Random design seeds are derived from SHA-256 rather than Python's process-randomized `hash()`.
+'''
+
+          notebook = {
+              'cells': [
+                  {
+                      'cell_type': 'markdown',
+                      'metadata': {'id': 'title'},
+                      'source': md.splitlines(keepends=True),
+                  },
+                  {
+                      'cell_type': 'code',
+                      'execution_count': None,
+                      'metadata': {'id': 'phase14_full_analysis'},
+                      'outputs': [],
+                      'source': src.splitlines(keepends=True),
+                  },
+              ],
+              'metadata': {
+                  'colab': {'name': 'paper1_analysis.ipynb', 'provenance': []},
+                  'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'},
+                  'language_info': {'name': 'python'},
+              },
+              'nbformat': 4,
+              'nbformat_minor': 5,
+          }
+          out = Path('notebooks/paper1_analysis.ipynb')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(notebook, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print('Built', out, 'from', src_path)
+          PY
+
+      - name: Commit notebook
+        shell: bash
+        run: |
+          if git diff --quiet -- notebooks/paper1_analysis.ipynb; then
+            echo 'Notebook already up to date.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add notebooks/paper1_analysis.ipynb
+          git commit -m 'Prepare Phase 14 self-contained Colab notebook'
+          git push
