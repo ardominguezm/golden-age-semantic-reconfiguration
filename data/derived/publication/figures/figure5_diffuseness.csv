@@ -1,0 +1,7 @@
+representation,coverage_target,n_edges,n_concepts,n_components,largest_component_contribution_share_of_slice
+Benchmark,0.5,59,72,20,0.154004
+Benchmark,0.8,124,125,23,0.394972
+Lemma-only,0.5,69,81,20,0.227200
+Lemma-only,0.8,146,138,22,0.662200
+Surface-form,0.5,43,56,17,0.208600
+Surface-form,0.8,92,110,28,0.382500

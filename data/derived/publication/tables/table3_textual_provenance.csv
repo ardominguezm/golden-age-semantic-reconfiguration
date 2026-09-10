@@ -1,0 +1,7 @@
+Rank,Computational relation,Philological reading,Direction,Year,Poem,Interpretive role
+1,corona::NOUN--dorada::NOUN,coronar (imperative)--dorada (adjective),weakening/death,1584,No enfrene tu gallardo pensamiento,NLP/philology audit
+2,ciñar::VERB--sién::NOUN,ceñir--sienes,weakening/death,1582,"Al tramontar del sol, la ninfa mía",early body/adornment
+3,llorar::VERB--premio::NOUN,llorar--premio,weakening/death,1582,"Suspiros tristes, lágrimas cansadas",affective example
+4,cabello::NOUN--ciñar::VERB,cabello--ceñir,strengthening/birth,1604,"Montaña inaccesible, opuesta en vano",relational recontextualization
+11,cristal::NOUN--yugo::NOUN,cristal--yugo,strengthening/birth,1604,"Montaña inaccesible, opuesta en vano",edge-to-meso-scale bridge
+19,campaña::NOUN--monte::NOUN,campaña--monte,strengthening/birth,1602,Verdes juncos del Duero a mi pastora,landscape/motion

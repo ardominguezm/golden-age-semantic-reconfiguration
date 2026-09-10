@@ -1,0 +1,4 @@
+Representation,rho_vs_benchmark,R_1592,rank_1592,birth_plus_death_pct,N1_percentile_p,N2max_percentile_p,coverage80_components_LCC_pct
+Benchmark,1.000,0.233746,1,95.49,81.10 / .189,96.40 / .036,23 / 39.50
+Lemma-only,0.976,0.252488,1,95.86,92.45 / .076,97.75 / .023,22 / 66.22
+Surface-form,0.929,0.227260,1,95.11,83.10 / .169,96.40 / .036,28 / 38.25

@@ -1,0 +1,15 @@
+Design element,Specification
+Textual corpus,Navarro TEI sonnet corpus
+Dated sample,97 sonnets by 6 authors
+Chronology uncertainty,"1,000 Monte Carlo realizations"
+NLP engine,spaCy 3.8.7 with es_core_news_sm 3.8.0
+Retained-token gate,"Alphabetic tokens; coarse POS in NOUN, VERB, ADJ, ADV"
+Benchmark node identity,Normalized spaCy lemma + coarse POS
+Context,Unique retained concepts within each poetic line
+Vocabulary threshold,Global poem document frequency >= 2
+Edge construction,At least one supporting line; PPMI weighting
+Primary aggregation,Author-balanced; raw poem weighting secondary
+Temporal design,20-year rolling windows with a 5-year step; 9 temporal windows and 8 adjacent transitions
+Rewiring statistic,1 - cosine over persistent-concept PPMI edge vectors
+Counterfactuals,N1 local author-overlap-preserving reassignment; N2 within-author chronology permutation with trajectory-level maximum statistic
+Mechanism comparison,1580-1599 versus 1585-1604

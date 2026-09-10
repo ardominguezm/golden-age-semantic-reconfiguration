@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated article when final bibliographic details are available."
+title: "Golden Age Semantic Reconfiguration"
+type: software
+authors:
+  - family-names: "Domínguez-Monterroza"
+    given-names: "Andy"
+repository-code: "https://github.com/ardominguezm/golden-age-semantic-reconfiguration"
+date-released: 2026-09-10

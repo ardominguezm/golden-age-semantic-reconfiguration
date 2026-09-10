@@ -1,0 +1,4 @@
+representation,short_label,n1_percentile,n1_tail_p,n2max_percentile,n2max_tail_p
+Benchmark lemma::POS,Benchmark,81.10,0.189405,96.40,0.036482
+lemma_only,Lemma-only,92.45,0.07596201899050475,97.75,0.022988505747126436
+surface_form,Surface-form,83.10,0.16941529235382308,96.40,0.03648175912043978

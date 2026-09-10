@@ -1,0 +1,4 @@
+representation,birth_share,death_share,shared_reweight_share,mean_rewiring,birth_death_share
+Benchmark,0.406867,0.548003,0.045130,0.233746,0.954870
+Lemma-only,0.416871,0.541746,0.041383,0.252488,0.958617
+Surface-form,0.452004,0.499072,0.048925,0.227260,0.951076
