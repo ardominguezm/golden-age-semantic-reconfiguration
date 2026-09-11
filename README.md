@@ -1,4 +1,4 @@
-# Golden Age Semantic Reconfiguration
+# Spanish Golden Age Poetry Semantic Reconfiguration
 
 Companion repository for the manuscript **“Literary Change as Relational Reconfiguration: Temporal Semantic Networks of Spanish Golden Age Poetry.”** Submitted in *Digital Scholarship in the Humanities*, Oxford University Press, Sept. 2026.
 
